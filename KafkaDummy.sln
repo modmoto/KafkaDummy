@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KafkaSender", "KafkaSender\KafkaSender.csproj", "{7C2A226B-B13E-4598-9210-ACD8875C266D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KafkaReceiver", "KafkaReceiver\KafkaReceiver.csproj", "{1F4E9078-D11E-4093-B71A-D036D8C1BD16}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7C2A226B-B13E-4598-9210-ACD8875C266D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C2A226B-B13E-4598-9210-ACD8875C266D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C2A226B-B13E-4598-9210-ACD8875C266D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C2A226B-B13E-4598-9210-ACD8875C266D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F4E9078-D11E-4093-B71A-D036D8C1BD16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F4E9078-D11E-4093-B71A-D036D8C1BD16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F4E9078-D11E-4093-B71A-D036D8C1BD16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F4E9078-D11E-4093-B71A-D036D8C1BD16}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
