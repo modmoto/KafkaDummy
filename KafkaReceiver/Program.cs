@@ -30,7 +30,7 @@ class Program
                     try
                     {
                         var cr = c.Consume(cts.Token);
-                        Console.WriteLine($"message: '{cr.Value}'");
+                        Console.WriteLine($"message: '{cr.Message.Value}'");
                     }
                     catch (ConsumeException e)
                     {
