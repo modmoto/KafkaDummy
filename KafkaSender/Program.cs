@@ -21,6 +21,8 @@ class Program
             {
                 Console.WriteLine("Nachricht eingeben");
                 var readLine = Console.ReadLine();
+                // p.Produce(new TopicPartition("my-topic", new Partition(0)), new Message<Null, string> { Value = readLine }, handler);
+                // p.Produce(new TopicPartition("my-topic", new Partition(1)), new Message<Null, string> { Value = readLine }, handler);
                 p.Produce("my-topic", new Message<Null, string> { Value = readLine }, handler);
                 p.Flush();
             }
