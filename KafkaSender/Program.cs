@@ -6,7 +6,7 @@ class Program
 {
     public static void Main(string[] args)
     {
-        var conf = new ProducerConfig { BootstrapServers = "65.21.139.246:9092" };
+        var conf = new ProducerConfig { BootstrapServers = "65.21.139.246:9092", AllowAutoCreateTopics = true };
 
         Action<DeliveryReport<Null, string>> handler = r =>
         {
@@ -15,14 +15,17 @@ class Program
                 Console.WriteLine($"Delivery Error: {r.Error.Reason}");
             }
         };
+        
         using (var p = new ProducerBuilder<Null, string>(conf).Build())
         {
+            var partition = 0;
             while (true)
             {
                 Console.WriteLine("Nachricht eingeben");
-                var readLine = Console.ReadLine();
-                // p.Produce(new TopicPartition("my-topic", new Partition(0)), new Message<Null, string> { Value = readLine }, handler);
-                // p.Produce(new TopicPartition("my-topic", new Partition(1)), new Message<Null, string> { Value = readLine }, handler);
+                var readLine = $"{partition}: {Console.ReadLine()}";
+                // var topicPartition = new TopicPartition("my-topic", new Partition(partition % 2));
+                // p.Produce(topicPartition, new Message<Null, string> { Value = readLine }, handler);
+                // partition++;
                 p.Produce("my-topic", new Message<Null, string> { Value = readLine }, handler);
                 p.Flush();
             }

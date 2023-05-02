@@ -4,7 +4,7 @@ namespace KafkaReceiver;
 
 class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var conf = new ConsumerConfig
         { 
@@ -30,6 +30,7 @@ class Program
                     try
                     {
                         var cr = c.Consume(cts.Token);
+                        await Task.Delay(1000);
                         Console.WriteLine($"message: '{cr.Message.Value}'");
                     }
                     catch (ConsumeException e)
