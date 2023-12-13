@@ -14,7 +14,7 @@ class Program
             SaslUsername = "MTHMXNOJJOMJDWKC",
             SaslMechanism = SaslMechanism.Plain,
             SecurityProtocol = SecurityProtocol.SaslSsl,
-            Partitioner = Partitioner.Consistent,
+            // Partitioner = Partitioner.Consistent,
         };
 
         Action<DeliveryReport<string, string>> handler = r =>
