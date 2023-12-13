@@ -9,7 +9,7 @@ class Program
         var conf = new ConsumerConfig
         { 
             GroupId = "test-consumer-group",
-            BootstrapServers = "65.21.139.246:9092",
+            BootstrapServers = "127.0.0.1:9092",
             AutoOffsetReset = AutoOffsetReset.Earliest
         };
 

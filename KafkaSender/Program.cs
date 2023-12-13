@@ -6,7 +6,7 @@ class Program
 {
     public static void Main(string[] args)
     {
-        var conf = new ProducerConfig { BootstrapServers = "65.21.139.246:9092", AllowAutoCreateTopics = true };
+        var conf = new ProducerConfig { BootstrapServers = "127.0.0.1:9092", AllowAutoCreateTopics = true };
 
         Action<DeliveryReport<Null, string>> handler = r =>
         {
