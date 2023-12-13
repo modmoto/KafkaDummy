@@ -8,14 +8,18 @@ class Program
     {
         var conf = new ConsumerConfig
         { 
+            BootstrapServers = "pkc-75m1o.europe-west3.gcp.confluent.cloud:9092",
+            SaslPassword = "E5AL3BwH3tvuz7nnZyc4T/ENN2TC0UUNTOces8gPefP2jtL+G5HRE8hjgI1bpFgJ",
+            SaslUsername = "MTHMXNOJJOMJDWKC",
+            SaslMechanism = SaslMechanism.Plain,
+            SecurityProtocol = SecurityProtocol.SaslSsl,
             GroupId = "test-consumer-group",
-            BootstrapServers = "127.0.0.1:9092",
             AutoOffsetReset = AutoOffsetReset.Earliest
         };
 
         using (var c = new ConsumerBuilder<Ignore, string>(conf).Build())
         {
-            c.Subscribe("my-topic");
+            c.Subscribe("SimonHEs-amazing-topic");
 
             CancellationTokenSource cts = new CancellationTokenSource();
             Console.CancelKeyPress += (_, e) => {
