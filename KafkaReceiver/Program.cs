@@ -39,17 +39,17 @@ class Program
                 {
                     consumeResults.Add(cr);
                     Console.WriteLine($"Captured messages ({consumeResults.Count, 2})");
+                    Console.WriteLine($"message: {cr.Partition.Value} / {cr.Offset}: '{cr.Message.Value}'");
+                    c.Commit(cr);
                 }
                 
                 await Task.Delay(10, cts.Token);
             }
 
-            foreach (var consumeResult in consumeResults)
-            {
-                Console.WriteLine($"message: {consumeResult.Partition.Value} / {consumeResult.Offset}: '{consumeResult.Message.Value}'");    
-            }
-            
-            c.Commit();
+            // foreach (var consumeResult in consumeResults)
+            // {
+            //     Console.WriteLine($"message: {consumeResult.Partition.Value} / {consumeResult.Offset}: '{consumeResult.Message.Value}'");    
+            // }
         }
     }
 }
