@@ -35,7 +35,7 @@ class Program
             while (true)
             {
                 var simonClient = "Simon-Client";
-                p.Produce("SimonHEs-amazing-topic", new Message<string, string> 
+                p.Produce("factory.presents.checked.0", new Message<string, string> 
                 { 
                     Value = Console.ReadLine(), 
                     Key = Guid.NewGuid().ToString(),

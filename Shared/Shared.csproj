@@ -7,4 +7,12 @@
         <RootNamespace>digital.thinkport</RootNamespace>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Folder Include="Generated\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Apache.Avro" Version="1.11.3" />
+    </ItemGroup>
+
 </Project>

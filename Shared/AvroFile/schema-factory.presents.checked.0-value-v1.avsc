@@ -1,0 +1,36 @@
+{
+  "fields": [
+    {
+      "name": "brand",
+      "type": {
+        "avro.java.string": "String",
+        "type": "string"
+      }
+    },
+    {
+      "name": "product",
+      "type": {
+        "avro.java.string": "String",
+        "type": "string"
+      }
+    },
+    {
+      "name": "price",
+      "type": "double"
+    },
+    {
+      "name": "checkedBy",
+      "type": {
+        "avro.java.string": "String",
+        "type": "string"
+      }
+    },
+    {
+      "name": "checkedAt",
+      "type": "long"
+    }
+  ],
+  "name": "OrderedPresentChecked",
+  "namespace": "digital.thinkport",
+  "type": "record"
+}

@@ -1,0 +1,25 @@
+{
+  "fields": [
+    {
+      "name": "name",
+      "type": {
+        "avro.java.string": "String",
+        "type": "string"
+      }
+    },
+    {
+      "name": "age",
+      "type": "int"
+    },
+    {
+      "name": "address",
+      "type": {
+        "avro.java.string": "String",
+        "type": "string"
+      }
+    }
+  ],
+  "name": "PresentRecipient",
+  "namespace": "digital.thinkport",
+  "type": "record"
+}
