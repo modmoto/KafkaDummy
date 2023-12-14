@@ -14,6 +14,7 @@ class Program
             SaslUsername = "MTHMXNOJJOMJDWKC",
             SaslMechanism = SaslMechanism.Plain,
             SecurityProtocol = SecurityProtocol.SaslSsl,
+            Acks = Acks.All // default, erst ack zurück wenn alles repliziert ist
             // Partitioner = Partitioner.Consistent,
         };
 

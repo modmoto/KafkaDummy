@@ -15,8 +15,13 @@ class Program
             SecurityProtocol = SecurityProtocol.SaslSsl,
             GroupId = "test-consumer-group",
             AutoOffsetReset = AutoOffsetReset.Earliest,
-            EnableAutoCommit = false
+            EnableAutoCommit = false,
         };
+
+        // 3SYHEWSXNVO7EG3P
+        // 9xJ+x9hW2AHEQIaqzBifBMBcgWP1kINcXNRy7+fGIe6xlCOlI1UzjVjXvtHMUenQ
+        // "schema.registry.url", "https://psrc-2312y.europe-west3.gcp.confluent.cloud"
+        //     
 
         using var c = new ConsumerBuilder<Ignore, string>(conf).Build();
         
