@@ -23,19 +23,18 @@ class Program
             {
                 Console.WriteLine($"Delivery Error: {r.Error.Reason}");
             }
-            else
-            {
-                Console.WriteLine($"Written to offset: {r.Offset}");
-            }
+            // else
+            // {
+            //     Console.WriteLine($"Written to offset: {r.Offset}");
+            // }
         };
         
         using (var p = new ProducerBuilder<string, string>(conf).Build())
         {
             while (true)
             {
-                Console.WriteLine("Nachricht eingeben");
-                string simonClient = "Simon-Client";
-                p.Produce(new TopicPartition("SimonHEs-amazing-topic", new Partition(2)), new Message<string, string> 
+                var simonClient = "Simon-Client";
+                p.Produce("SimonHEs-amazing-topic", new Message<string, string> 
                 { 
                     Value = Console.ReadLine(), 
                     Key = Guid.NewGuid().ToString(),

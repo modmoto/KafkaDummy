@@ -14,39 +14,42 @@ class Program
             SaslMechanism = SaslMechanism.Plain,
             SecurityProtocol = SecurityProtocol.SaslSsl,
             GroupId = "test-consumer-group",
-            AutoOffsetReset = AutoOffsetReset.Earliest
+            AutoOffsetReset = AutoOffsetReset.Earliest,
+            EnableAutoCommit = false
         };
 
-        using (var c = new ConsumerBuilder<Ignore, string>(conf).Build())
+        using var c = new ConsumerBuilder<Ignore, string>(conf).Build();
+        
+        c.Subscribe("SimonHEs-amazing-topic");
+
+        CancellationTokenSource cts = new CancellationTokenSource();
+        Console.CancelKeyPress += (_, e) => {
+            e.Cancel = true;
+            cts.Cancel();
+        };
+
+        var messageSize = 10;
+        while (true)
         {
-            c.Subscribe("SimonHEs-amazing-topic");
-
-            CancellationTokenSource cts = new CancellationTokenSource();
-            Console.CancelKeyPress += (_, e) => {
-                e.Cancel = true; // prevent the process from terminating.
-                cts.Cancel();
-            };
-
-            try
+            var consumeResults = new List<ConsumeResult<Ignore, string>>();
+            while (consumeResults.Count < messageSize)
             {
-                while (true)
+                var cr = c.Consume();
+                if (cr.Message != null)
                 {
-                    try
-                    {
-                        var cr = c.Consume(cts.Token);
-                        await Task.Delay(1000, cts.Token);
-                        Console.WriteLine($"message: '{cr.Message.Value}'");
-                    }
-                    catch (ConsumeException e)
-                    {
-                        Console.WriteLine($"Error occured: {e.Error.Reason}");
-                    }
+                    consumeResults.Add(cr);
+                    Console.WriteLine($"Captured messages ({consumeResults.Count, 2})");
                 }
+                
+                await Task.Delay(10, cts.Token);
             }
-            catch (OperationCanceledException)
+
+            foreach (var consumeResult in consumeResults)
             {
-                c.Close();
+                Console.WriteLine($"message: {consumeResult.Partition.Value} / {consumeResult.Offset}: '{consumeResult.Message.Value}'");    
             }
+            
+            c.Commit();
         }
     }
 }
