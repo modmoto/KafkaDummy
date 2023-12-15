@@ -9,8 +9,6 @@ class Program
 {
     static async Task Main(string[] args)
     { 
-        
-        
         var config = new StreamConfig
         {
             BootstrapServers = "pkc-7xoy1.eu-central-1.aws.confluent.cloud:9092",
@@ -19,12 +17,11 @@ class Program
             SaslUsername = "C7S7K6PA44AHMFCH",
             SaslMechanism = SaslMechanism.Plain,
             SecurityProtocol = SecurityProtocol.SaslSsl,
-            // DefaultKeySerDes = new StringSerDes(),
-            // DefaultValueSerDes = new AvroSerializer<OrderedPresentChecked>(schemaRegistry)
         };
+        
         var builder = new StreamBuilder();
 
-        builder.Stream<string, OrderedPresent>("factory.presents.ordered.0", new StringSerDes(), new CustomSerDesOrderedPresent())
+        builder.Stream<string, OrderedPresent>("factory.presents.ordered.0", new StringSerDes(), new AvroSerDes<OrderedPresent>())
             .Peek((_, val) => Console.WriteLine(val.product))
             .Filter((_, present) => present.price < 50)
             .MapValues((_, present) => new OrderedPresentChecked
@@ -35,7 +32,7 @@ class Program
                 checkedAt = DateTime.UtcNow.Ticks,
                 checkedBy = "simon"
             })
-            .To("factory.presents.checked.0", new StringSerDes(), new CustomSerDesOrderedPresentChecked());
+            .To("factory.presents.checked.0", new StringSerDes(), new AvroSerDes<OrderedPresentChecked>());
 
         using KafkaStream stream = new KafkaStream(builder.Build(), config);
 
@@ -52,35 +49,13 @@ class Program
     }
 }
 
-internal class CustomSerDesOrderedPresent : ISerDes<OrderedPresent>
+internal class AvroSerDes<T> : ISerDes<T> where T : class
 {
-    private AvroDeserializer<OrderedPresent> _avroDeserializer;
-    private AvroSerializer<OrderedPresent> _avroSerializer;
+    private AvroDeserializer<T> _avroDeserializer;
+    private AvroSerializer<T> _avroSerializer;
+    private CachedSchemaRegistryClient _schemaRegistryClient;
 
-    // public CustomSerDes()
-    // {
-    //     // var schemaRegistryConfig = new SchemaRegistryConfig
-    //     // {
-    //     //     BasicAuthUserInfo = "VWE36QWXLK3QXTCT:WGBX7QQWsTLD5sVBOY1O/kd8LSzFfEN31WXPM60VAfY2mFfghe4OKlpAeovvXb9K",
-    //     //     BasicAuthCredentialsSource = AuthCredentialsSource.UserInfo,
-    //     //     Url = "https://psrc-2312y.europe-west3.gcp.confluent.cloud"
-    //     // };
-    //     //
-    //     // var schemaRegistry = new CachedSchemaRegistryClient(schemaRegistryConfig);
-    //     // _avroDeserializer = new AvroDeserializer<OrderedPresent>(schemaRegistry);
-    //     // _avroSerializer = new AvroSerializer<OrderedPresent>(schemaRegistry);
-    // }
-    public object DeserializeObject(byte[] data, SerializationContext context)
-    {
-        return _avroDeserializer.DeserializeAsync(data, false, context).Result;
-    }
-
-    public byte[] SerializeObject(object data, SerializationContext context)
-    {
-        return _avroSerializer.SerializeAsync(data as OrderedPresent, context).Result;
-    }
-
-    public void Initialize(SerDesContext context)
+    public AvroSerDes()
     {
         var schemaRegistryConfig = new SchemaRegistryConfig
         {
@@ -88,41 +63,9 @@ internal class CustomSerDesOrderedPresent : ISerDes<OrderedPresent>
             BasicAuthCredentialsSource = AuthCredentialsSource.UserInfo,
             Url = "https://psrc-2312y.europe-west3.gcp.confluent.cloud"
         };
-    
-        var schemaRegistry = new CachedSchemaRegistryClient(schemaRegistryConfig);
-        _avroDeserializer = new AvroDeserializer<OrderedPresent>(schemaRegistry);
-        _avroSerializer = new AvroSerializer<OrderedPresent>(schemaRegistry);
+
+        _schemaRegistryClient = new CachedSchemaRegistryClient(schemaRegistryConfig);
     }
-
-    public OrderedPresent Deserialize(byte[] data, SerializationContext context)
-    {
-        return _avroDeserializer.DeserializeAsync(data, false, context).Result;
-    }
-
-    public byte[] Serialize(OrderedPresent data, SerializationContext context)
-    {
-        return _avroSerializer.SerializeAsync(data, context).Result;
-    }
-}
-
-internal class CustomSerDesOrderedPresentChecked : ISerDes<OrderedPresentChecked>
-{
-    private AvroDeserializer<OrderedPresentChecked> _avroDeserializer;
-    private AvroSerializer<OrderedPresentChecked> _avroSerializer;
-
-    // public CustomSerDes()
-    // {
-    //     // var schemaRegistryConfig = new SchemaRegistryConfig
-    //     // {
-    //     //     BasicAuthUserInfo = "VWE36QWXLK3QXTCT:WGBX7QQWsTLD5sVBOY1O/kd8LSzFfEN31WXPM60VAfY2mFfghe4OKlpAeovvXb9K",
-    //     //     BasicAuthCredentialsSource = AuthCredentialsSource.UserInfo,
-    //     //     Url = "https://psrc-2312y.europe-west3.gcp.confluent.cloud"
-    //     // };
-    //     //
-    //     // var schemaRegistry = new CachedSchemaRegistryClient(schemaRegistryConfig);
-    //     // _avroDeserializer = new AvroDeserializer<OrderedPresent>(schemaRegistry);
-    //     // _avroSerializer = new AvroSerializer<OrderedPresent>(schemaRegistry);
-    // }
     public object DeserializeObject(byte[] data, SerializationContext context)
     {
         return _avroDeserializer.DeserializeAsync(data, false, context).Result;
@@ -130,29 +73,21 @@ internal class CustomSerDesOrderedPresentChecked : ISerDes<OrderedPresentChecked
 
     public byte[] SerializeObject(object data, SerializationContext context)
     {
-        return _avroSerializer.SerializeAsync(data as OrderedPresentChecked, context).Result;
+        return _avroSerializer.SerializeAsync(data as T, context).Result;
     }
 
     public void Initialize(SerDesContext context)
     {
-        var schemaRegistryConfig = new SchemaRegistryConfig
-        {
-            BasicAuthUserInfo = "VWE36QWXLK3QXTCT:WGBX7QQWsTLD5sVBOY1O/kd8LSzFfEN31WXPM60VAfY2mFfghe4OKlpAeovvXb9K",
-            BasicAuthCredentialsSource = AuthCredentialsSource.UserInfo,
-            Url = "https://psrc-2312y.europe-west3.gcp.confluent.cloud"
-        };
-    
-        var schemaRegistry = new CachedSchemaRegistryClient(schemaRegistryConfig);
-        _avroDeserializer = new AvroDeserializer<OrderedPresentChecked>(schemaRegistry);
-        _avroSerializer = new AvroSerializer<OrderedPresentChecked>(schemaRegistry);
+        _avroDeserializer = new AvroDeserializer<T>(_schemaRegistryClient);
+        _avroSerializer = new AvroSerializer<T>(_schemaRegistryClient);
     }
 
-    public OrderedPresentChecked Deserialize(byte[] data, SerializationContext context)
+    public T Deserialize(byte[] data, SerializationContext context)
     {
         return _avroDeserializer.DeserializeAsync(data, false, context).Result;
     }
 
-    public byte[] Serialize(OrderedPresentChecked data, SerializationContext context)
+    public byte[] Serialize(T data, SerializationContext context)
     {
         return _avroSerializer.SerializeAsync(data, context).Result;
     }
