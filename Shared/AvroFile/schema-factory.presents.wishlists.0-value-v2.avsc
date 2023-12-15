@@ -1,0 +1,40 @@
+{
+  "fields": [
+    {
+      "name": "recipient",
+      "type": {
+        "avro.java.string": "String",
+        "type": "string"
+      }
+    },
+    {
+      "name": "age",
+      "type": "int"
+    },
+    {
+      "name": "address",
+      "type": {
+        "avro.java.string": "String",
+        "type": "string"
+      }
+    },
+    {
+      "name": "presents",
+      "type": {
+        "default": {},
+        "items": {
+          "avro.java.string": "String",
+          "type": "string"
+        },
+        "type": "array"
+      }
+    },
+    {
+      "name": "price",
+      "type": "double"
+    }
+  ],
+  "name": "Wishlist",
+  "namespace": "digital.thinkport",
+  "type": "record"
+}
