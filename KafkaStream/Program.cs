@@ -51,9 +51,8 @@ class Program
 
 internal class AvroSerDes<T> : ISerDes<T> where T : class
 {
-    private AvroDeserializer<T> _avroDeserializer;
-    private AvroSerializer<T> _avroSerializer;
-    private CachedSchemaRegistryClient _schemaRegistryClient;
+    private readonly AvroDeserializer<T> _avroDeserializer;
+    private readonly AvroSerializer<T> _avroSerializer;
 
     public AvroSerDes()
     {
@@ -64,7 +63,9 @@ internal class AvroSerDes<T> : ISerDes<T> where T : class
             Url = "https://psrc-2312y.europe-west3.gcp.confluent.cloud"
         };
 
-        _schemaRegistryClient = new CachedSchemaRegistryClient(schemaRegistryConfig);
+        var schemaRegistryClient = new CachedSchemaRegistryClient(schemaRegistryConfig);
+        _avroDeserializer = new AvroDeserializer<T>(schemaRegistryClient);
+        _avroSerializer = new AvroSerializer<T>(schemaRegistryClient);
     }
     public object DeserializeObject(byte[] data, SerializationContext context)
     {
@@ -78,8 +79,6 @@ internal class AvroSerDes<T> : ISerDes<T> where T : class
 
     public void Initialize(SerDesContext context)
     {
-        _avroDeserializer = new AvroDeserializer<T>(_schemaRegistryClient);
-        _avroSerializer = new AvroSerializer<T>(_schemaRegistryClient);
     }
 
     public T Deserialize(byte[] data, SerializationContext context)
