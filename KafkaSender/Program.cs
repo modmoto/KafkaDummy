@@ -13,9 +13,9 @@ class Program
     {
         var conf = new ProducerConfig
         {
-            BootstrapServers = "pkc-75m1o.europe-west3.gcp.confluent.cloud:9092",
-            SaslPassword = "E5AL3BwH3tvuz7nnZyc4T/ENN2TC0UUNTOces8gPefP2jtL+G5HRE8hjgI1bpFgJ",
-            SaslUsername = "MTHMXNOJJOMJDWKC",
+            BootstrapServers = "pkc-7xoy1.eu-central-1.aws.confluent.cloud:9092",
+            SaslPassword = "YUHm8JhFGJQ12823r0yGHFjW+/3Yb6+FhyS1cFSjxg0ljMnWiQ8YoUUBAYlW5SHe",
+            SaslUsername = "C7S7K6PA44AHMFCH",
             SaslMechanism = SaslMechanism.Plain,
             SecurityProtocol = SecurityProtocol.SaslSsl,
             Acks = Acks.All // default, erst ack zurück wenn alles repliziert ist
@@ -24,12 +24,12 @@ class Program
         
         var schemaRegistryConfig = new SchemaRegistryConfig
         {
-            BasicAuthUserInfo = "3SYHEWSXNVO7EG3P:9xJ+x9hW2AHEQIaqzBifBMBcgWP1kINcXNRy7+fGIe6xlCOlI1UzjVjXvtHMUenQ",
+            BasicAuthUserInfo = "VWE36QWXLK3QXTCT:WGBX7QQWsTLD5sVBOY1O/kd8LSzFfEN31WXPM60VAfY2mFfghe4OKlpAeovvXb9K",
             BasicAuthCredentialsSource = AuthCredentialsSource.UserInfo,
             Url = "https://psrc-2312y.europe-west3.gcp.confluent.cloud"
         };
 
-        Action<DeliveryReport<string, OrderedPresentChecked>> handler = r =>
+        Action<DeliveryReport<string, OrderedPresent>> handler = r =>
         {
             if (r.Error.IsError)
             {
@@ -42,20 +42,18 @@ class Program
         };
 
         using var schemaRegistry = new CachedSchemaRegistryClient(schemaRegistryConfig);
-        using var p = new ProducerBuilder<string, OrderedPresentChecked>(conf)
-            .SetValueSerializer(new AvroSerializer<OrderedPresentChecked>(schemaRegistry).AsSyncOverAsync())
+        using var p = new ProducerBuilder<string, OrderedPresent>(conf)
+            .SetValueSerializer(new AvroSerializer<OrderedPresent>(schemaRegistry).AsSyncOverAsync())
             .SetErrorHandler((_, e) => Console.WriteLine($"Error: {e.Reason}"))
             .Build();
         while (true)
         {
             var simonClient = "Simon-Client";
-            p.Produce("factory.presents.checked.0", new Message<string, OrderedPresentChecked> 
+            p.Produce("factory.presents.ordered.0", new Message<string, OrderedPresent> 
             { 
-                Value = new OrderedPresentChecked
+                Value = new OrderedPresent
                 {
                     brand = "siemons",
-                    checkedAt = 123512,
-                    checkedBy = "simon he",
                     price = 14.56,
                     product = Console.ReadLine()
                 }, 
@@ -65,7 +63,7 @@ class Program
                     { "producer-name", Encoding.UTF8.GetBytes(simonClient) }
                 }
             }, handler);
-            // p.ProduceAsync("factory.presents.checked.0", new Message<string, OrderedPresentChecked> 
+            // p.ProduceAsync("factory.presents.ordered.0", new Message<string, OrderedPresentChecked> 
             // { 
             //     Value = new OrderedPresentChecked
             //     {

@@ -12,9 +12,9 @@ class Program
     {
         var conf = new ConsumerConfig
         { 
-            BootstrapServers = "pkc-75m1o.europe-west3.gcp.confluent.cloud:9092",
-            SaslPassword = "E5AL3BwH3tvuz7nnZyc4T/ENN2TC0UUNTOces8gPefP2jtL+G5HRE8hjgI1bpFgJ",
-            SaslUsername = "MTHMXNOJJOMJDWKC",
+            BootstrapServers = "pkc-7xoy1.eu-central-1.aws.confluent.cloud:9092",
+            SaslPassword = "YUHm8JhFGJQ12823r0yGHFjW+/3Yb6+FhyS1cFSjxg0ljMnWiQ8YoUUBAYlW5SHe",
+            SaslUsername = "C7S7K6PA44AHMFCH",
             SaslMechanism = SaslMechanism.Plain,
             SecurityProtocol = SecurityProtocol.SaslSsl,
             GroupId = "test-consumer-group-nochmal",
@@ -24,19 +24,19 @@ class Program
 
         var schemaRegistryConfig = new SchemaRegistryConfig
         {
-            BasicAuthUserInfo = "3SYHEWSXNVO7EG3P:9xJ+x9hW2AHEQIaqzBifBMBcgWP1kINcXNRy7+fGIe6xlCOlI1UzjVjXvtHMUenQ",
+            BasicAuthUserInfo = "VWE36QWXLK3QXTCT:WGBX7QQWsTLD5sVBOY1O/kd8LSzFfEN31WXPM60VAfY2mFfghe4OKlpAeovvXb9K",
             BasicAuthCredentialsSource = AuthCredentialsSource.UserInfo,
             Url = "https://psrc-2312y.europe-west3.gcp.confluent.cloud"
         };
 
         using var schemaRegistry = new CachedSchemaRegistryClient(schemaRegistryConfig);
         using var consumer =
-            new ConsumerBuilder<Ignore, OrderedPresentChecked>(conf)
-                .SetValueDeserializer(new AvroDeserializer<OrderedPresentChecked>(schemaRegistry).AsSyncOverAsync())
+            new ConsumerBuilder<Ignore, OrderedPresent>(conf)
+                .SetValueDeserializer(new AvroDeserializer<OrderedPresent>(schemaRegistry).AsSyncOverAsync())
                 .SetErrorHandler((_, e) => Console.WriteLine($"Error: {e.Reason}"))
                 .Build();
         
-        consumer.Subscribe("factory.presents.checked.0");
+        consumer.Subscribe("factory.presents.ordered.0");
 
         CancellationTokenSource cts = new CancellationTokenSource();
         Console.CancelKeyPress += (_, e) => {
@@ -48,7 +48,7 @@ class Program
         var messageSize = 10;
         while (true)
         {
-            var consumeResults = new List<ConsumeResult<Ignore, OrderedPresentChecked>>();
+            var consumeResults = new List<ConsumeResult<Ignore, OrderedPresent>>();
             while (consumeResults.Count < messageSize)
             {
                 var cr = consumer.Consume();
