@@ -17,12 +17,13 @@ class Program
             SaslUsername = "C7S7K6PA44AHMFCH",
             SaslMechanism = SaslMechanism.Plain,
             SecurityProtocol = SecurityProtocol.SaslSsl,
+            ReplicationFactor = 3
         };
         
         var builder = new StreamBuilder();
 
         builder.Stream<string, OrderedPresent>("factory.presents.ordered.0", new StringSerDes(), new AvroSerDes<OrderedPresent>())
-            .Peek((_, val) => Console.WriteLine(val.product))
+            .Peek((_, val) => Console.WriteLine($"{DateTime.UtcNow} {val.product} "))
             .Filter((_, present) => present.price < 50)
             .MapValues((_, present) => new OrderedPresentChecked
             {
@@ -34,6 +35,7 @@ class Program
             })
             .To("factory.presents.checked.0", new StringSerDes(), new AvroSerDes<OrderedPresentChecked>());
 
+        
         using KafkaStream stream = new KafkaStream(builder.Build(), config);
 
         Console.CancelKeyPress += (o, e) => {
