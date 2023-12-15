@@ -18,6 +18,8 @@ dotnet avro generate --registry-config schema.registry.basic.auth.user.info=3SYH
 ```
 
 # Avra Codegen Official with file
+more here
+https://github.com/confluentinc/confluent-kafka-dotnet/tree/master/examples/AvroSpecific
 ## Install
 ```powershell
 dotnet tool install --global Apache.Avro.Tools --version 1.11.3
