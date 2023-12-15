@@ -12,7 +12,7 @@ class Program
         var config = new StreamConfig
         {
             BootstrapServers = "pkc-7xoy1.eu-central-1.aws.confluent.cloud:9092",
-            ApplicationId = "SimonsMegaStreamsdad",
+            ApplicationId = "elf-factory",
             SaslPassword = "YUHm8JhFGJQ12823r0yGHFjW+/3Yb6+FhyS1cFSjxg0ljMnWiQ8YoUUBAYlW5SHe",
             SaslUsername = "C7S7K6PA44AHMFCH",
             SaslMechanism = SaslMechanism.Plain,
