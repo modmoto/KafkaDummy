@@ -55,7 +55,7 @@ class Program
                 {
                     brand = "siemons",
                     price = 14.56,
-                    product = Console.ReadLine()
+                    product = "Simons Fake"
                 }, 
                 Key = Guid.NewGuid().ToString(),
                 Headers = new Headers
@@ -80,6 +80,7 @@ class Program
             //     }
             // }).ContinueWith(task => handler.Invoke(task.));
             p.Flush();
+            Task.Delay(200).Wait();
         }
     }
 }
