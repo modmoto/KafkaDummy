@@ -1,4 +1,4 @@
-# Avra Code gen (does not work with the officla afro deserializer)
+# Avra Code gen (does not work with the offical afro deserializer)
 ## Install
 ```powershell
 dotnet tool install Chr.Avro.Cli --global
